@@ -181,6 +181,9 @@ sub main
   elsif($opts{u} == 6) { goto CHKPOINT6; }
   #Goto checkpoint end
 
+  ##
+  
+  
   ##Generate copies of haplotypes
   ##TODO: SURVIVOR now supports only two haplotypes
   #CHKPOINT1:
@@ -398,6 +401,12 @@ sub main
   #}
   ##Generate reads for haplotypes end
 
+
+
+
+
+
+
   #Simulate reads
   CHKPOINT4:
   {
@@ -458,7 +467,6 @@ sub main
       { &Log("Simulating on haplotype $i done already"); return; }
 
       &Log("Load read positions haplotype $i");
-      my @defaultBarcodeQualAry = split //, "AAAFFFKKKKKKKKKK";
       my %faidx = ();
       my @boundary = ();
       my $genomeSize = &LoadFaidx(\%faidx, \@boundary, "$opts{p}.hap.$i.clean.fasta");
@@ -499,20 +507,36 @@ sub main
         delete $fnToBeUnlinkAtExit{"$opts{p}.$i.fp"};
         &Log("Exported $opts{p}.$i.fp");
       }
-
-      return ($readPositionsInFile, $genomeSize);
+      print ("memory is ",$readPositionsInFile,"\n \n ");
+      return $readPositionsInFile #($readPositionsInFile, $genomeSize); become flattetn as one 
     }
     
      
     sub simReads
      {
-      my $genomeSize = $_[0];
-      my %genomeSize = $_[1];
+      #my %readPositionsInFile_allHaplotyes = shift; it arises problem hash as input argument of subroutines 
+
+      my %readPositionsInFile_allHaplotyes = %{shift()};
+      #$haplotype_number = keys %readPositionsInFile_allHaplotyes;
+
     
-      open my $outputfh0, "> $opts{p}.0.manifest" or &LogAndDie("Error opening $opts{p}.0.manifest");
-      ++$fnToBeUnlinkAtExit{"$opts{p}.0.manifest"};
-      open my $outputfh1, "> $opts{p}.1.manifest" or &LogAndDie("Error opening $opts{p}.1.manifest");
-      ++$fnToBeUnlinkAtExit{"$opts{p}.1.manifest"};
+      
+      my %faidx = ();
+      my @boundary2 = ();
+      my $genomeSize = &LoadFaidx(\%faidx, \@boundary2, "$opts{p}.hap.0.clean.fasta");
+      &LogAndDie("Failed loading genome index $opts{p}.hap.0.clean.fasta.fai") if ($genomeSize == 0);
+      
+      my %outputfh=();
+      for(my $i = 0; $i < $opts{d}; ++$i)
+      {
+        open my $outputfh{$i}, "> $opts{p}.$i.manifest" or &LogAndDie("Error opening $opts{p}.$i.manifest");
+        ++$fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
+      }
+      
+      #open my $outputfh0, "> $opts{p}.0.manifest" or &LogAndDie("Error opening $opts{p}.0.manifest");
+      #++$fnToBeUnlinkAtExit{"$opts{p}.0.manifest"};
+      #open my $outputfh1, "> $opts{p}.1.manifest" or &LogAndDie("Error opening $opts{p}.1.manifest");
+      #++$fnToBeUnlinkAtExit{"$opts{p}.1.manifest"};
 
       my $readsCountDown = int($opts{x} * 1000 * 1000 ); #/ $opts{d}
       &Log("readsCountDown: $readsCountDown");
@@ -552,13 +576,11 @@ sub main
             
             
             
-        #my $numberOfMolecules = &PoissonMoleculePerPartition($opts{m});
-        ##&Log("numberOfMolecules: $numberOfMolecules");
-        #for(my $j = 0; $j < $numberOfMolecules; ++$j)
-        #{
-          ##Select the haplotype-origin of molecule randomly
-          #my $haplo_orig_molecule = int(rand($opts{d})); 
-          
+          #Select the haplotype-origin of molecule randomly
+          my $haplo_orig_molecule = int(rand($opts{d})); 
+          my $readPositionsInFile_IsUsing;
+          $readPositionsInFile_IsUsing = $readPositionsInFile_allHaplotyes{$haplo_orig_molecule};
+
             
           #Pick a starting position
           my $startingPosition = int(rand($genomeSize));
@@ -569,33 +591,32 @@ sub main
           #&Log("readsToExtract: $readsToExtract");
 
           #Check and align to boundary
-          my $lowerBoundary; my $upperBoundary;
-          &bSearch($startingPosition, \@boundary, \$lowerBoundary, \$upperBoundary);
-          if(($startingPosition + $moleculeSize) > $upperBoundary)
-          {
-            my $newMoleculeSize = $upperBoundary - $startingPosition;
-            if($newMoleculeSize < 1000) #skip molecule with length < 1000
-            {
-              --$j;
-              next;
-            }
-            $readsToExtract = int($readsToExtract * $newMoleculeSize / $moleculeSize);
-            $moleculeSize = $newMoleculeSize;
-          }
+          #my $lowerBoundary2; my $upperBoundary2;   my @boundary2= (); # ????
+          #&bSearch($startingPosition, \@boundary2, \$lowerBoundary2, \$upperBoundary2);
+          #if(($startingPosition + $moleculeSize) > $upperBoundary2)
+          #{
+            #my $newMoleculeSize = $upperBoundary2 - $startingPosition;
+            #if($newMoleculeSize < 1000) #skip molecule with length < 1000
+            #{
+              #--$j;
+              #next;
+            #}
+            #$readsToExtract = int($readsToExtract * $newMoleculeSize / $moleculeSize);
+            #$moleculeSize = $newMoleculeSize;
+          #}
 
           #Get a list of read positions
           my @readPosToExtract = random_uniform_integer($readsToExtract, $startingPosition, $startingPosition+$moleculeSize-1);
           foreach my $gCoord (@readPosToExtract)
           {
-            my $filePosToExtract = getFromPos($readPositionsInFile, $gCoord, $genomeSize);
-            
-            
-            
+            my $filePosToExtract = getFromPos($readPositionsInFile_IsUsing, $gCoord, $genomeSize);
             
             next if $filePosToExtract == -1;
 
             #Introduce barcode mismatch
             my @selectedBarcodeAry = @precreatedSelectedBarcodeAry;
+            my @defaultBarcodeQualAry = split //, "AAAFFFKKKKKKKKKK";
+
             my @barcodeQualAry = @defaultBarcodeQualAry;
             for(my $k = 0; $k < $barcodeLength; ++$k)
             {
@@ -616,123 +637,10 @@ sub main
             }
 
             #Output
-            print $outputfh "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
+            #print $outputfh "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
 
-            --$readsCountDown;
-            if($readsCountDown % 100000 == 0)
-            { &Log("$readsCountDown reads remaining"); }
-          }
-        }
-      }
-    
-    #{
-       #my $genomeSize = $_[0];
-      ##open my $outputfh, "> $opts{p}.$i.manifest" or &LogAndDie("Error opening $opts{p}.$i.manifest");
-      #open my $outputfh0, "> $opts{p}.0.manifest" or &LogAndDie("Error opening $opts{p}.0.manifest");
-      #open my $outputfh1, "> $opts{p}.1.manifest" or &LogAndDie("Error opening $opts{p}.1.manifest");
+            #print $outputfh{$i} "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
 
-      #++$fnToBeUnlinkAtExit{"$opts{p}.0.manifest"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.1.manifest"};
-
-      #my $readsCountDown = int($opts{x} * 1000 * 1000 / $opts{d});
-      #&Log("readsCountDown: $readsCountDown");
-
-      #while($readsCountDown > 0)
-      #{
-        ##Pick a barcode
-        #my $selectedBarcode;
-        #{
-          #my $idx = int(rand($numBarcodes));
-          #lock($barcodesMutexLock);
-          #my $wentToZero = 0;
-          #while(1)
-          #{
-            #if($barcodes[$idx] eq "")
-            #{
-              #++$idx;
-              #if($idx == $numBarcodes && not($wentToZero)) {
-                  #$idx = 0;
-                  #$wentToZero = 1;
-              #} elsif($idx == $numBarcodes && $wentToZero) {
-                  #&LogAndDie("Reached end of barcodes list. No more barcodes. Last read processed: $readsCountDown. Exiting.");
-              #}
-              #next;
-            #}
-            #$selectedBarcode = $barcodes[$idx];
-            #$barcodes[$idx] = "";
-            #last;
-          #}
-        #}
-        #my @precreatedSelectedBarcodeAry = split //, $selectedBarcode;
-
-
-        
-        #my $numberOfMolecules = &PoissonMoleculePerPartition($opts{m});
-        ##&Log("numberOfMolecules: $numberOfMolecules");
-        #for(my $j = 0; $j < $numberOfMolecules; ++$j)
-        #{
-          ##Select the haplotype-origin of molecule randomly
-          #my $haplo_orig_molecule = int(rand($opts{d})); 
-          
-          
-          
-          ##&Log("haplotype-origin of this molecule is the  $haplo_orig_molecule th ");
-          ##Pick a starting position
-          #my $startingPosition = int(rand($genomeSize));
-          ##&Log("startingPosition: $startingPosition");
-          ##Pick a fragment size
-          #my $moleculeSize  = ($sizesCount == 0) ? (&PoissonMoleculeSize($opts{f}*1000)) : ($fragmentSizesList[rand($sizesCount)]);
-          #my $readsToExtract = int($readsPerMolecule * $moleculeSize / ($opts{f}*1000) + 0.4999);
-          ##&Log("readsToExtract: $readsToExtract");
-
-          ##Check and align to boundary
-          #my @boundary = ();
-          #my $lowerBoundary; my $upperBoundary;
-          #&bSearch($startingPosition, \@boundary, \$lowerBoundary, \$upperBoundary);
-          #if(($startingPosition + $moleculeSize) > $upperBoundary)
-          #{
-            #my $newMoleculeSize = $upperBoundary - $startingPosition;
-            #if($newMoleculeSize < 1000) #skip molecule with length < 1000
-            #{
-              #--$j;
-              #next;
-            #}
-            #$readsToExtract = int($readsToExtract * $newMoleculeSize / $moleculeSize);
-            #$moleculeSize = $newMoleculeSize;
-          #}
-
-          ##Get a list of read positions
-          #my @readPosToExtract = random_uniform_integer($readsToExtract, $startingPosition, $startingPosition+$moleculeSize-1);
-          #foreach my $gCoord (@readPosToExtract)
-          #{
-            #my $readPositionsInFile_IsUsing = "";
-            #$readPositionsInFile_IsUsing = $readPositionsInFile{$haplo_orig_molecule}
-            
-            
-            
-            #my $filePosToExtract = getFromPos($readPositionsInFile_IsUsing, $gCoord, $genomeSize);
-            #next if $filePosToExtract == -1;
-
-            ##Introduce barcode mismatch
-            #my @selectedBarcodeAry = @precreatedSelectedBarcodeAry;
-            #my @barcodeQualAry = @defaultBarcodeQualAry;
-            #for(my $k = 0; $k < $barcodeLength; ++$k)
-            #{
-              #my $isErr = rand() <= $barcodeErrorRateFromMismatchObv1{$k}{$selectedBarcodeAry[$k]} ? 1 : 0;
-              #if($isErr == 1)
-              #{
-                #my $rnd = rand();
-                #my $idx = 1;
-                #while($idx < 4)
-                #{
-                  #last if $rnd < $barcodeErrorRateFromMismatchObv2{$k}{$selectedBarcodeAry[$k]}{$substitute{$selectedBarcodeAry[$k]}[$idx]};
-                  #++$idx;
-                #}
-                #--$idx;
-                #$selectedBarcodeAry[$k] = $substitute{$selectedBarcodeAry[$k]}[$idx];
-                #$barcodeQualAry[$k] = chr(35);
-              #}
-            #}
 
             ##Output
             #if ($haplo_orig_molecule == 0)
@@ -743,43 +651,58 @@ sub main
             #{
             #print $outputfh1 "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
             #}
-            #--$readsCountDown;
-            #if($readsCountDown % 100000 == 0)
-            #{ &Log("$readsCountDown reads remaining"); }
-          #}
-        #}
-      #}
-      #close $outputfh0;
-      #close $outputfh1;
-
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
-      #freeAry($readPositionsInFile);
-      #if(!-s "$opts{p}.$i.manifest")
-      #{
+            --$readsCountDown;
+            if($readsCountDown % 100000 == 0)
+            { &Log("$readsCountDown reads remaining"); }
+          }
+        }
+      }
+    
+      for(my $i = 0; $i < $opts{d}; ++$i)
+      {
+        open my $outputfh{$i};
+      }
+      
+    }
+    #delete $fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
+    #freeAry($readPositionsInFile);
+    #if(!-s "$opts{p}.$i.manifest")
+    #{
         #&LogAndDie("$opts{p}.$i.manifest empty");
       #}
     #}
     # Some old version of Perl will run into segmentation fault if using multithread here
-    #my @threadPool = ();
-    for(my $i = 0; $i < $opts{d}; ++$i)
+    
+    my %readPositionsInFile_all=();
+    for(my $i = 0; $i < $opts{d}; ++$i )
     {
       #$threadPool[$i] = async{simReads($i)};
-      print($opts{d});
+      print("ploidy level is ",$opts{d},"\n");
       
-      my ($readPositionsInFile_outer, $GenomeSize) = simManifest($i);
+      my $readPositionsInFile_outer = simManifest($i); #, $GenomeSize)
       
 
-      my %readPositionsInFile_allHaplotyes=();
-      $readPositionsInFile_allHaplotyes{$i} = $readPositionsInFile_outer;
- 
+      $readPositionsInFile_all{$i} = $readPositionsInFile_outer;
+      #print("this is ",$readPositionsInFile_outer,"\n a \n ");
       sleep(2+int(rand(3)));;
     }
+    print(Dumper(\%readPositionsInFile_all),"\n");
+
+    # simReads(%readPositionsInFile_all); subroutines inour hash problem
+    simReads(\%readPositionsInFile_all); #$GenomeSize,
+
     
-    simReads($GenomeSize,readPositionsInFile_allHaplotyes);
+    foreach my $readPositionsInFile_in (values %readPositionsInFile_all)
+    {
+    freeAry($readPositionsInFile_in);
+    }
+
+    
+
     
     #for(my $i = 0; $i < $opts{d}; ++$i)
     #{
-    #  $threadPool[$i]->join();
+      #$threadPool[$i]->join();
     #}
 
     &Log("Simulate reads end");
@@ -803,12 +726,12 @@ sub main
       delete $fnToBeUnlinkAtExit{"$opts{p}.$i.sort.manifest"};
     }
     my @threadPool = ();
-    for(my $i = 0)
+    for(my $i = 0; $i < $opts{d}; ++$i)
     {
       $threadPool[$i] = async{sortManifest($i)};
       sleep(2+int(rand(3)));;
     }
-    for(my $i = 0) # ; $i < $opts{d}; ++$i
+    for(my $i = 0; $i < $opts{d}; ++$i)
     {
       $threadPool[$i]->join();
     }
@@ -835,12 +758,12 @@ sub main
       delete $fnToBeUnlinkAtExit{"$opts{p}_S1_L00${ii}_R2_001.fastq.gz"};
     }
     my @threadPool = ();
-    for(my $i = 0) # ; $i < $opts{d}; ++$i
+    for(my $i = 0; $i < $opts{d}; ++$i)
     {
       $threadPool[$i] = async{extractReads($i)};
       sleep(2+int(rand(3)));;
     }
-    for(my $i = 0) #; $i < $opts{d}; ++$i
+    for(my $i = 0; $i < $opts{d}; ++$i)
     {
       $threadPool[$i]->join();
     }
