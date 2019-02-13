@@ -181,9 +181,13 @@ sub main
   elsif($opts{u} == 6) { goto CHKPOINT6; }
   #Goto checkpoint end
 
-  ##
-  
-  
+
+
+
+
+
+
+
   ##Generate copies of haplotypes
   ##TODO: SURVIVOR now supports only two haplotypes
   #CHKPOINT1:
@@ -407,6 +411,8 @@ sub main
 
 
 
+
+
   #Simulate reads
   CHKPOINT4:
   {
@@ -517,8 +523,9 @@ sub main
       #my %readPositionsInFile_allHaplotyes = shift; it arises problem hash as input argument of subroutines 
 
       my %readPositionsInFile_allHaplotyes = %{shift()};
-      #$haplotype_number = keys %readPositionsInFile_allHaplotyes;
 
+
+      #my $genomeSize = $_[0];
     
       
       my %faidx = ();
@@ -527,11 +534,14 @@ sub main
       &LogAndDie("Failed loading genome index $opts{p}.hap.0.clean.fasta.fai") if ($genomeSize == 0);
       
       my %outputfh=();
-      for(my $i = 0; $i < $opts{d}; ++$i)
+      #my $outputfh0 ="";
+      for(my $i = 0 ; $i < $opts{d}; ++$i)
       {
-        open my $outputfh{$i}, "> $opts{p}.$i.manifest" or &LogAndDie("Error opening $opts{p}.$i.manifest");
+        open $outputfh{$i}, "> $opts{p}.$i.manifest" or &LogAndDie("Error opening $opts{p}.$i.manifest");
         ++$fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
+       #print("this is $i \n ");
       }
+      
       
       #open my $outputfh0, "> $opts{p}.0.manifest" or &LogAndDie("Error opening $opts{p}.0.manifest");
       #++$fnToBeUnlinkAtExit{"$opts{p}.0.manifest"};
@@ -637,10 +647,8 @@ sub main
             }
 
             #Output
-            #print $outputfh "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
-
-            #print $outputfh{$i} "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
-
+            #my $var= $outputfh{$haplo_orig_molecule};
+            print {$outputfh{$haplo_orig_molecule}} "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
 
             ##Output
             #if ($haplo_orig_molecule == 0)
@@ -657,12 +665,13 @@ sub main
           }
         }
       }
-    
       for(my $i = 0; $i < $opts{d}; ++$i)
       {
-        open my $outputfh{$i};
+        close $outputfh{$i};
       }
-      
+
+    
+    #close $outputfh1;
     }
     #delete $fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
     #freeAry($readPositionsInFile);
