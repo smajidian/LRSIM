@@ -188,222 +188,222 @@ sub main
 
 
 
-  ##Generate copies of haplotypes
-  ##TODO: SURVIVOR now supports only two haplotypes
-  #CHKPOINT1:
-  #if(defined $opts{g})
-  #{
-    #my @hapFNs = split /,/, $opts{g};
-    #my $i=0;
-    #{ &Log("Haplotypes input mode enabled"); }
-    #foreach my $fn (@hapFNs)
-    #{
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.$i.fasta"};
-      #{ &Log("Copying $fn to $opts{p}.hap.$i.fasta"); }
-      #system("cp -f $fn $opts{p}.hap.$i.fasta");
-      #++$i;
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.$i.fasta"};
-    #}
-  #}
-  #elsif(defined $opts{r})
-  #{
-    #{ &Log("Variant simulation mode enabled"); }
-    #our $survivorPostprocess = 0;
-    #if(-e "$opts{p}.hapA.fasta" && -e "$opts{p}.hapB.fasta" &&
-       #-e "$opts{p}.hap.hetA.insertions.fa" && -e "$opts{p}.hap.hetB.insertions.fa" && -e "$opts{p}.hap.homAB.insertions.fa" &&
-       #-e "$opts{p}.hap.hetA.bed" && -e "$opts{p}.hap.hetB.bed" && -e "$opts{p}.hap.homAB.bed" &&
-       #-e "$opts{p}.hap.parameter")
-    #{ &Log("SURVIVOR done already"); }
-    #else
-    #{
-      #&Log("SURVIVOR start");
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hapA.fasta"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hapB.fasta"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.insertions.fa"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.insertions.fa"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.insertions.fa"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.bed"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.bed"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.bed"};
-      #++$fnToBeUnlinkAtExit{"$opts{p}.hap.parameter"};
-      #++$survivorPostprocess;
-      #if(defined $opts{n}) {
-        #$opts{4} = $opts{7} = $opts{0} = 0;
-      #}
-      #$opts{3}++ if $opts{3} == $opts{2};
-      #$opts{6}++ if $opts{6} == $opts{5};
-      #$opts{9}++ if $opts{9} == $opts{8};
-      #open my $parameterFH, ">$opts{p}.hap.parameter" or &LogAndDie("$opts{p}.hap.parameter not found");
-      #print $parameterFH <<PARAMETER;
-#PARAMETER FILE: DO JUST MODIFY THE VALUES AND KEEP THE SPACES!
-#DUPLICATION_minimum_length: $opts{5}
-#DUPLICATION_maximum_length: $opts{6}
-#DUPLICATION_number: $opts{7}
-#INDEL_minimum_length: $opts{2}
-#INDEL_maximum_length: $opts{3}
-#INDEL_number: $opts{4}
-#TRANSLOCATION_minimum_length: $opts{8}
-#TRANSLOCATION_maximum_length: $opts{9}
-#TRANSLOCATION_number: $opts{0}
-#INVERSION_minimum_length: $opts{5}
-#INVERSION_maximum_length: $opts{6}
-#INVERSION_number: $opts{7}
-#INV_del_minimum_length: 1000
-#INV_del_maximum_length: 10000
-#INV_del_number: 0
-#INV_dup_minimum_length: 1000
-#INV_dup_maximum_length: 10000
-#INV_dup_number: 0
-#INTRA_TRANS_minimum_length: 1000
-#INTRA_TRANS_maximum_length: 10000
-#INTRA_TRANS_number: 0
-#PARAMETER
-      #close $parameterFH;
+  #Generate copies of haplotypes
+  #TODO: SURVIVOR now supports only two haplotypes
+  CHKPOINT1:
+  if(defined $opts{g})
+  {
+    my @hapFNs = split /,/, $opts{g};
+    my $i=0;
+    { &Log("Haplotypes input mode enabled"); }
+    foreach my $fn (@hapFNs)
+    {
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.$i.fasta"};
+      { &Log("Copying $fn to $opts{p}.hap.$i.fasta"); }
+      system("cp -f $fn $opts{p}.hap.$i.fasta");
+      ++$i;
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.$i.fasta"};
+    }
+  }
+  elsif(defined $opts{r})
+  {
+    { &Log("Variant simulation mode enabled"); }
+    our $survivorPostprocess = 0;
+    if(-e "$opts{p}.hapA.fasta" && -e "$opts{p}.hapB.fasta" &&
+       -e "$opts{p}.hap.hetA.insertions.fa" && -e "$opts{p}.hap.hetB.insertions.fa" && -e "$opts{p}.hap.homAB.insertions.fa" &&
+       -e "$opts{p}.hap.hetA.bed" && -e "$opts{p}.hap.hetB.bed" && -e "$opts{p}.hap.homAB.bed" &&
+       -e "$opts{p}.hap.parameter")
+    { &Log("SURVIVOR done already"); }
+    else
+    {
+      &Log("SURVIVOR start");
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hapA.fasta"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hapB.fasta"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.insertions.fa"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.insertions.fa"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.insertions.fa"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.bed"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.bed"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.bed"};
+      ++$fnToBeUnlinkAtExit{"$opts{p}.hap.parameter"};
+      ++$survivorPostprocess;
+      if(defined $opts{n}) {
+        $opts{4} = $opts{7} = $opts{0} = 0;
+      }
+      $opts{3}++ if $opts{3} == $opts{2};
+      $opts{6}++ if $opts{6} == $opts{5};
+      $opts{9}++ if $opts{9} == $opts{8};
+      open my $parameterFH, ">$opts{p}.hap.parameter" or &LogAndDie("$opts{p}.hap.parameter not found");
+      print $parameterFH <<PARAMETER;
+PARAMETER FILE: DO JUST MODIFY THE VALUES AND KEEP THE SPACES!
+DUPLICATION_minimum_length: $opts{5}
+DUPLICATION_maximum_length: $opts{6}
+DUPLICATION_number: $opts{7}
+INDEL_minimum_length: $opts{2}
+INDEL_maximum_length: $opts{3}
+INDEL_number: $opts{4}
+TRANSLOCATION_minimum_length: $opts{8}
+TRANSLOCATION_maximum_length: $opts{9}
+TRANSLOCATION_number: $opts{0}
+INVERSION_minimum_length: $opts{5}
+INVERSION_maximum_length: $opts{6}
+INVERSION_number: $opts{7}
+INV_del_minimum_length: 1000
+INV_del_maximum_length: 10000
+INV_del_number: 0
+INV_dup_minimum_length: 1000
+INV_dup_maximum_length: 10000
+INV_dup_number: 0
+INTRA_TRANS_minimum_length: 1000
+INTRA_TRANS_maximum_length: 10000
+INTRA_TRANS_number: 0
+PARAMETER
+      close $parameterFH;
 
-      #&Log("Running: $absPath/SURVIVOR 0 $opts{r} $opts{p}.hap.parameter 0 $opts{p}.hap $opts{1}");
-      #system("$absPath/SURVIVOR 0 $opts{r} $opts{p}.hap.parameter 0 $opts{p}.hap $opts{1} 1>/dev/null");
-      #if(!-e "$opts{p}.hapA.fasta")
-      #{ &LogAndDie("SURVIVOR error on missing $opts{p}.hapA.fasta"); }
-      #if(!-e "$opts{p}.hap.hetA.insertions.fa")
-      #{ &LogAndDie("SURVIVOR error on missing $opts{p}.hapA.insertions.fa"); }
-      #if(!-e "$opts{p}.hap.hetA.bed")
-      #{ &LogAndDie("SURVIVOR error on missing $opts{p}.hapA.bed"); }
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hapA.fasta"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hapB.fasta"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.insertions.fa"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.insertions.fa"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.insertions.fa"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.bed"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.bed"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.bed"};
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.parameter"};
-      #&Log("SURVIVOR end");
-    #}
-    #for(my $i = 0; $i < $opts{d}; ++$i)
-    #{
-      #if($survivorPostprocess != 0)
-      #{
-        #my $aOrb = $i % 2 == 0 ? 'A': 'B';
-        #system("ln $opts{p}.hap$aOrb.fasta $opts{p}.hap.$i.fasta");
-      #}
-    #}
-  #}
-  #else
-  #{ die "Should never reach here."; }
-  ##Generate copies of haplotypes end
+      &Log("Running: $absPath/SURVIVOR 0 $opts{r} $opts{p}.hap.parameter 0 $opts{p}.hap $opts{1}");
+      system("$absPath/SURVIVOR 0 $opts{r} $opts{p}.hap.parameter 0 $opts{p}.hap $opts{1} 1>/dev/null");
+      if(!-e "$opts{p}.hapA.fasta")
+      { &LogAndDie("SURVIVOR error on missing $opts{p}.hapA.fasta"); }
+      if(!-e "$opts{p}.hap.hetA.insertions.fa")
+      { &LogAndDie("SURVIVOR error on missing $opts{p}.hapA.insertions.fa"); }
+      if(!-e "$opts{p}.hap.hetA.bed")
+      { &LogAndDie("SURVIVOR error on missing $opts{p}.hapA.bed"); }
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hapA.fasta"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hapB.fasta"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.insertions.fa"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.insertions.fa"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.insertions.fa"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetA.bed"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.hetB.bed"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.homAB.bed"};
+      delete $fnToBeUnlinkAtExit{"$opts{p}.hap.parameter"};
+      &Log("SURVIVOR end");
+    }
+    for(my $i = 0; $i < $opts{d}; ++$i)
+    {
+      if($survivorPostprocess != 0)
+      {
+        my $aOrb = $i % 2 == 0 ? 'A': 'B';
+        system("ln $opts{p}.hap$aOrb.fasta $opts{p}.hap.$i.fasta");
+      }
+    }
+  }
+  else
+  { die "Should never reach here."; }
+  #Generate copies of haplotypes end
 
-  ##Build genome index
-  #CHKPOINT2:
-  #{
-    #{
-      #&Log("Build genome index start");
-      #sub cleanUpFasta
-      #{
-        #$SIG{'INT'} = $SIG{'TERM'} = $SIG{'KILL'} = sub { threads->exit(); };
-        #my $i = shift @_;
-        #if(-e "$opts{p}.hap.$i.clean.fasta")
-        #{ &Log("faFilter round $i done already"); return; }
-        #&Log("$absPath/faFilter.pl $opts{p}.hap.$i.fasta 0 > $opts{p}.hap.$i.clean.fasta");
-        #++$fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta"};
-        #system("$absPath/faFilter.pl $opts{p}.hap.$i.fasta 0 > $opts{p}.hap.$i.clean.fasta");
-        #delete @fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta"};
-      #}
-      #my @threadPool = ();
-      #for(my $i = 0; $i < $opts{d}; ++$i)
-      #{
-        #$threadPool[$i] = async{cleanUpFasta($i)};
-        #sleep(2+int(rand(3)));;
-      #}
-      #for(my $i = 0; $i < $opts{d}; ++$i)
-      #{
-        #$threadPool[$i]->join();
-      #}
-    #}
-    #{
-      #sub createFaidx
-      #{
-        #$SIG{'INT'} = $SIG{'TERM'} = $SIG{'KILL'} = sub { threads->exit(); };
-        #my $i = shift @_;
-        #if(-e "$opts{p}.hap.$i.clean.fasta.fai")
-        #{ &Log("samtools faidx round $i done already"); return; }
-        #&Log("$absPath/samtools faidx $opts{p}.hap.$i.clean.fasta");
-        #++$fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta.fai"};
-        #system("$absPath/samtools faidx $opts{p}.hap.$i.clean.fasta");
-        #delete $fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta.fai"};
-      #}
-      #my @threadPool = ();
-      #for(my $i = 0; $i < $opts{d}; ++$i)
-      #{
-        #$threadPool[$i] = async{createFaidx($i)};
-        #sleep(2+int(rand(3)));;
-      #}
-      #for(my $i = 0; $i < $opts{d}; ++$i)
-      #{
-        #$threadPool[$i]->join();
-      #}
-    #}
-    #&Log("Build genome index end");
-  #}
-  ##Build genome index end
+  #Build genome index
+  CHKPOINT2:
+  {
+    {
+      &Log("Build genome index start");
+      sub cleanUpFasta
+      {
+        $SIG{'INT'} = $SIG{'TERM'} = $SIG{'KILL'} = sub { threads->exit(); };
+        my $i = shift @_;
+        if(-e "$opts{p}.hap.$i.clean.fasta")
+        { &Log("faFilter round $i done already"); return; }
+        &Log("$absPath/faFilter.pl $opts{p}.hap.$i.fasta 0 > $opts{p}.hap.$i.clean.fasta");
+        ++$fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta"};
+        system("$absPath/faFilter.pl $opts{p}.hap.$i.fasta 0 > $opts{p}.hap.$i.clean.fasta");
+        delete @fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta"};
+      }
+      my @threadPool = ();
+      for(my $i = 0; $i < $opts{d}; ++$i)
+      {
+        $threadPool[$i] = async{cleanUpFasta($i)};
+        sleep(2+int(rand(3)));;
+      }
+      for(my $i = 0; $i < $opts{d}; ++$i)
+      {
+        $threadPool[$i]->join();
+      }
+    }
+    {
+      sub createFaidx
+      {
+        $SIG{'INT'} = $SIG{'TERM'} = $SIG{'KILL'} = sub { threads->exit(); };
+        my $i = shift @_;
+        if(-e "$opts{p}.hap.$i.clean.fasta.fai")
+        { &Log("samtools faidx round $i done already"); return; }
+        &Log("$absPath/samtools faidx $opts{p}.hap.$i.clean.fasta");
+        ++$fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta.fai"};
+        system("$absPath/samtools faidx $opts{p}.hap.$i.clean.fasta");
+        delete $fnToBeUnlinkAtExit{"$opts{p}.hap.$i.clean.fasta.fai"};
+      }
+      my @threadPool = ();
+      for(my $i = 0; $i < $opts{d}; ++$i)
+      {
+        $threadPool[$i] = async{createFaidx($i)};
+        sleep(2+int(rand(3)));;
+      }
+      for(my $i = 0; $i < $opts{d}; ++$i)
+      {
+        $threadPool[$i]->join();
+      }
+    }
+    &Log("Build genome index end");
+  }
+  #Build genome index end
 
-  ##Generate reads for haplotypes
-  #CHKPOINT3:
-  #{
-    #my $threadsPerHaplotype = $opts{z}/2;
-    #our $needPostprocess :shared = 0;
-    #our $readsPerHaplotype = int($opts{x} * 1000 * 1000 / $opts{d} * 1.5 / $threadsPerHaplotype);
-    #sub dwgsimGenReads
-    #{
-      #$SIG{'INT'} = $SIG{'TERM'} = $SIG{'KILL'} = sub { threads->exit(); };
-      #my $i = shift @_;
-      #my $j = shift @_;
-      #my $readLenghtWithoutBarcode = 135;
-      #my $readLenghtWithBarcode = 151;
-      #++$needPostprocess;
-      #if(-e "$opts{p}.dwgsim.$i.12.fastq")
-      #{ &Log("DWGSIM round $i done already"); return; }
-      #&Log("DWGSIM round $i thread $j start");
-      #&Log("$absPath/dwgsim -N $readsPerHaplotype -e $opts{e} -E $opts{E} -d $opts{i} -s $opts{s} -1 $readLenghtWithoutBarcode -2 $readLenghtWithBarcode -H -y 0 -S 0 -c 0 -m /dev/null $opts{p}.hap.$i.clean.fasta $opts{p}.dwgsim.$i.$j");
-      #++$fnToBeUnlinkAtExit{"$opts{p}.dwgsim.$i.$j.12.fastq"};
-      #system("$absPath/dwgsim -N $readsPerHaplotype -e $opts{e} -E $opts{E} -d $opts{i} -s $opts{s} -1 $readLenghtWithoutBarcode -2 $readLenghtWithBarcode -H -y 0 -S 0 -c 0 -m /dev/null $opts{p}.hap.$i.clean.fasta $opts{p}.dwgsim.$i.$j");
-      #delete $fnToBeUnlinkAtExit{"$opts{p}.dwgsim.$i.$j.12.fastq"};
-      #if(!-s "$opts{p}.dwgsim.$i.$j.12.fastq")
-      #{ &LogAndDie("DWGSIM round $i error on missing $opts{p}.dwgsim.$i.$j.12.fastq"); }
-      #&Log("DWGSIM round $i thread $j end");
-    #}
-    #my @threadPool = ();
-    #for(my $i = 0; $i < $opts{d}; ++$i)
-    #{
-      #for(my $j = 0; $j < $threadsPerHaplotype; ++$j)
-      #{
-        #$threadPool[$i*$threadsPerHaplotype+$j] = async{dwgsimGenReads($i, $j)};
-        #sleep(2+int(rand(3)));;
-      #}
-    #}
-    #for(my $i = 0; $i < $opts{d}; ++$i)
-    #{
-      #for(my $j = 0; $j < $threadsPerHaplotype; ++$j)
-      #{
-        #$threadPool[$i*$threadsPerHaplotype+$j]->join();
-        #$SIG{INT} = $SIG{TERM} = \&signal_handler_wait;
-        #if($needPostprocess != 0)
-        #{
-          #if($j == 0)
-          #{
-            #rename("$opts{p}.dwgsim.$i.0.12.fastq","$opts{p}.dwgsim.$i.12.fastq");
-          #}
-          #else
-          #{
-            #&Log("cat $opts{p}.dwgsim.$i.$j.12.fastq >> $opts{p}.dwgsim.$i.12.fastq");
-            #system("cat $opts{p}.dwgsim.$i.$j.12.fastq >> $opts{p}.dwgsim.$i.12.fastq");
-            #unlink("$opts{p}.dwgsim.$i.$j.12.fastq");
-          #}
-        #}
-        #$SIG{INT} = $SIG{TERM} = \&signal_handler;
-      #}
-    #}
-  #}
-  ##Generate reads for haplotypes end
+  #Generate reads for haplotypes
+  CHKPOINT3:
+  {
+    my $threadsPerHaplotype = $opts{z}/2;
+    our $needPostprocess :shared = 0;
+    our $readsPerHaplotype = int($opts{x} * 1000 * 1000 / $opts{d} * 1.5 / $threadsPerHaplotype);
+    sub dwgsimGenReads
+    {
+      $SIG{'INT'} = $SIG{'TERM'} = $SIG{'KILL'} = sub { threads->exit(); };
+      my $i = shift @_;
+      my $j = shift @_;
+      my $readLenghtWithoutBarcode = 135;
+      my $readLenghtWithBarcode = 151;
+      ++$needPostprocess;
+      if(-e "$opts{p}.dwgsim.$i.12.fastq")
+      { &Log("DWGSIM round $i done already"); return; }
+      &Log("DWGSIM round $i thread $j start");
+      &Log("$absPath/dwgsim -N $readsPerHaplotype -e $opts{e} -E $opts{E} -d $opts{i} -s $opts{s} -1 $readLenghtWithoutBarcode -2 $readLenghtWithBarcode -H -y 0 -S 0 -c 0 -m /dev/null $opts{p}.hap.$i.clean.fasta $opts{p}.dwgsim.$i.$j");
+      ++$fnToBeUnlinkAtExit{"$opts{p}.dwgsim.$i.$j.12.fastq"};
+      system("$absPath/dwgsim -N $readsPerHaplotype -e $opts{e} -E $opts{E} -d $opts{i} -s $opts{s} -1 $readLenghtWithoutBarcode -2 $readLenghtWithBarcode -H -y 0 -S 0 -c 0 -m /dev/null $opts{p}.hap.$i.clean.fasta $opts{p}.dwgsim.$i.$j");
+      delete $fnToBeUnlinkAtExit{"$opts{p}.dwgsim.$i.$j.12.fastq"};
+      if(!-s "$opts{p}.dwgsim.$i.$j.12.fastq")
+      { &LogAndDie("DWGSIM round $i error on missing $opts{p}.dwgsim.$i.$j.12.fastq"); }
+      &Log("DWGSIM round $i thread $j end");
+    }
+    my @threadPool = ();
+    for(my $i = 0; $i < $opts{d}; ++$i)
+    {
+      for(my $j = 0; $j < $threadsPerHaplotype; ++$j)
+      {
+        $threadPool[$i*$threadsPerHaplotype+$j] = async{dwgsimGenReads($i, $j)};
+        sleep(2+int(rand(3)));;
+      }
+    }
+    for(my $i = 0; $i < $opts{d}; ++$i)
+    {
+      for(my $j = 0; $j < $threadsPerHaplotype; ++$j)
+      {
+        $threadPool[$i*$threadsPerHaplotype+$j]->join();
+        $SIG{INT} = $SIG{TERM} = \&signal_handler_wait;
+        if($needPostprocess != 0)
+        {
+          if($j == 0)
+          {
+            rename("$opts{p}.dwgsim.$i.0.12.fastq","$opts{p}.dwgsim.$i.12.fastq");
+          }
+          else
+          {
+            &Log("cat $opts{p}.dwgsim.$i.$j.12.fastq >> $opts{p}.dwgsim.$i.12.fastq");
+            system("cat $opts{p}.dwgsim.$i.$j.12.fastq >> $opts{p}.dwgsim.$i.12.fastq");
+            unlink("$opts{p}.dwgsim.$i.$j.12.fastq");
+          }
+        }
+        $SIG{INT} = $SIG{TERM} = \&signal_handler;
+      }
+    }
+  }
+  #Generate reads for haplotypes end
 
 
 
@@ -460,17 +460,16 @@ sub main
 
 
     
-    #$readPositionsInFile_allHaplotyes{0}=0;# for each haplotype
     # For every Haplotype
-
-    sub simManifest
+    # Extracting the position of the first base of each read from fastq file (it is in the first lie @ third part after _ for R1 and R2 )
+    sub PositionExporting #simManifest 
     {
       $SIG{'INT'} = $SIG{'TERM'} = $SIG{'KILL'} = sub { threads->exit(); };
       my $i = shift;
       &Log("Simulating on haplotype: $i");
 
-      if(-e "$opts{p}.$i.manifest")
-      { &Log("Simulating on haplotype $i done already"); return; }
+      #if(-e "$opts{p}.$i.manifest")
+      #{ &Log("Simulating on haplotype $i done already"); return; } # it should near the call line, also contain simreads
 
       &Log("Load read positions haplotype $i");
       my %faidx = ();
@@ -513,20 +512,14 @@ sub main
         delete $fnToBeUnlinkAtExit{"$opts{p}.$i.fp"};
         &Log("Exported $opts{p}.$i.fp");
       }
-      print ("memory is ",$readPositionsInFile,"\n \n ");
-      return $readPositionsInFile #($readPositionsInFile, $genomeSize); become flattetn as one 
+      #print ("memory is ",$readPositionsInFile,"\n \n ");
+      return $readPositionsInFile 
     }
     
      
     sub simReads
      {
-      #my %readPositionsInFile_allHaplotyes = shift; it arises problem hash as input argument of subroutines 
-
       my %readPositionsInFile_allHaplotyes = %{shift()};
-
-
-      #my $genomeSize = $_[0];
-    
       
       my %faidx = ();
       my @boundary2 = ();
@@ -534,19 +527,11 @@ sub main
       &LogAndDie("Failed loading genome index $opts{p}.hap.0.clean.fasta.fai") if ($genomeSize == 0);
       
       my %outputfh=();
-      #my $outputfh0 ="";
       for(my $i = 0 ; $i < $opts{d}; ++$i)
       {
         open $outputfh{$i}, "> $opts{p}.$i.manifest" or &LogAndDie("Error opening $opts{p}.$i.manifest");
         ++$fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
-       #print("this is $i \n ");
-      }
-      
-      
-      #open my $outputfh0, "> $opts{p}.0.manifest" or &LogAndDie("Error opening $opts{p}.0.manifest");
-      #++$fnToBeUnlinkAtExit{"$opts{p}.0.manifest"};
-      #open my $outputfh1, "> $opts{p}.1.manifest" or &LogAndDie("Error opening $opts{p}.1.manifest");
-      #++$fnToBeUnlinkAtExit{"$opts{p}.1.manifest"};
+      }    
 
       my $readsCountDown = int($opts{x} * 1000 * 1000 ); #/ $opts{d}
       &Log("readsCountDown: $readsCountDown");
@@ -585,7 +570,6 @@ sub main
         {
             
             
-            
           #Select the haplotype-origin of molecule randomly
           my $haplo_orig_molecule = int(rand($opts{d})); 
           my $readPositionsInFile_IsUsing;
@@ -601,19 +585,19 @@ sub main
           #&Log("readsToExtract: $readsToExtract");
 
           #Check and align to boundary
-          #my $lowerBoundary2; my $upperBoundary2;   my @boundary2= (); # ????
-          #&bSearch($startingPosition, \@boundary2, \$lowerBoundary2, \$upperBoundary2);
-          #if(($startingPosition + $moleculeSize) > $upperBoundary2)
-          #{
-            #my $newMoleculeSize = $upperBoundary2 - $startingPosition;
-            #if($newMoleculeSize < 1000) #skip molecule with length < 1000
-            #{
-              #--$j;
-              #next;
-            #}
-            #$readsToExtract = int($readsToExtract * $newMoleculeSize / $moleculeSize);
-            #$moleculeSize = $newMoleculeSize;
-          #}
+          my $lowerBoundary2; my $upperBoundary2; 
+          &bSearch($startingPosition, \@boundary2, \$lowerBoundary2, \$upperBoundary2);
+          if(($startingPosition + $moleculeSize) > $upperBoundary2)
+          {
+            my $newMoleculeSize = $upperBoundary2 - $startingPosition;
+            if($newMoleculeSize < 1000) #skip molecule with length < 1000
+            {
+              --$j;
+              next;
+            }
+            $readsToExtract = int($readsToExtract * $newMoleculeSize / $moleculeSize);
+            $moleculeSize = $newMoleculeSize;
+          }
 
           #Get a list of read positions
           my @readPosToExtract = random_uniform_integer($readsToExtract, $startingPosition, $startingPosition+$moleculeSize-1);
@@ -647,18 +631,8 @@ sub main
             }
 
             #Output
-            #my $var= $outputfh{$haplo_orig_molecule};
             print {$outputfh{$haplo_orig_molecule}} "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
 
-            ##Output
-            #if ($haplo_orig_molecule == 0)
-            #{
-            #print $outputfh0 "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
-            #}
-            #if ($haplo_orig_molecule == 1)
-            #{
-            #print $outputfh1 "$filePosToExtract\t".(join "", @selectedBarcodeAry)."\t".(join "", @barcodeQualAry)."\n";
-            #}
             --$readsCountDown;
             if($readsCountDown % 100000 == 0)
             { &Log("$readsCountDown reads remaining"); }
@@ -668,18 +642,19 @@ sub main
       for(my $i = 0; $i < $opts{d}; ++$i)
       {
         close $outputfh{$i};
+        delete $fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
       }
 
-    
-    #close $outputfh1;
     }
-    #delete $fnToBeUnlinkAtExit{"$opts{p}.$i.manifest"};
+
     #freeAry($readPositionsInFile);
     #if(!-s "$opts{p}.$i.manifest")
     #{
         #&LogAndDie("$opts{p}.$i.manifest empty");
       #}
     #}
+    
+    
     # Some old version of Perl will run into segmentation fault if using multithread here
     
     my %readPositionsInFile_all=();
@@ -688,34 +663,26 @@ sub main
       #$threadPool[$i] = async{simReads($i)};
       print("ploidy level is ",$opts{d},"\n");
       
-      my $readPositionsInFile_outer = simManifest($i); #, $GenomeSize)
+      my $readPositionsInFile_outer = PositionExporting($i);
       
-
       $readPositionsInFile_all{$i} = $readPositionsInFile_outer;
-      #print("this is ",$readPositionsInFile_outer,"\n a \n ");
       sleep(2+int(rand(3)));;
     }
     print(Dumper(\%readPositionsInFile_all),"\n");
 
-    # simReads(%readPositionsInFile_all); subroutines inour hash problem
-    simReads(\%readPositionsInFile_all); #$GenomeSize,
+    simReads(\%readPositionsInFile_all);
 
-    
+
     foreach my $readPositionsInFile_in (values %readPositionsInFile_all)
     {
-    freeAry($readPositionsInFile_in);
+      freeAry($readPositionsInFile_in);
     }
-
-    
-
     
     #for(my $i = 0; $i < $opts{d}; ++$i)
     #{
       #$threadPool[$i]->join();
     #}
-
     &Log("Simulate reads end");
- 
   }
   #Simulate reads end
 
